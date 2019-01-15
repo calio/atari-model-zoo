@@ -28,6 +28,7 @@ from atari_zoo.config import datadir_local_dict,datadir_remote_dict,url_formatte
 from atari_zoo import game_action_counts 
 from atari_zoo.utils import *
 import atari_zoo.log
+import sonnet as snt
 
 
 """
@@ -319,15 +320,35 @@ class RL_A2C(RL_model):
      #{'type': 'dense', 'name': 'a2c/value/BiasAdd', 'size':18},
      {'type': 'dense', 'name': 'a2c/policy/BiasAdd', 'size':18}
    ]
-  
+
+class RL_IMPALA(RL_model):
+  input_name = 'agent_1/agent/unroll/batch_apply/truediv'
+  preprocess_style = 'np'
+
+  weights = [
+      {'name':'agent/batch_apply/convnet/conv_2d/w'},
+      {'name':'agent/batch_apply/convnet/conv_2d_1/w'},
+      {'name':'agent/batch_apply/convnet/conv_2d_2/w'},
+  ]
+
+  layers = [
+     {'type': 'conv', 'name': 'agent_1/agent/unroll/batch_apply/convnet/Relu', 'size': 32},
+     {'type': 'conv', 'name': 'agent_1/agent/unroll/batch_apply/convnet/Relu_1', 'size': 64},
+     {'type': 'conv', 'name': 'agent_1/agent/unroll/batch_apply/convnet/Relu_2', 'size': 64},
+     {'type': 'dense', 'name': 'agent_1/agent/unroll/batch_apply/Relu', 'size': 512},
+     {'type': 'dense', 'name': 'agent_1/agent/unroll/batch_apply_1/policy_logits/add', 'size': 18},
+   ]
+
   def get_action(self,model):
-        policy = model(self.layers[-1]['name']) 
-        rand_u = tf.random_uniform(tf.shape(policy))
-        action_sample = tf.argmax(policy - tf.log(-tf.log(rand_u)), axis=-1)
-        return action_sample
+        policy_logits = model(self.layers[-1]['name'])
+        new_action = tf.multinomial(policy_logits, num_samples=1,
+                output_dtype=tf.int32)
+        new_action = tf.squeeze(new_action, 1, name='new_action')
+
+        return new_action
 
 ### Instantiate concrete models using python magic
-class_map = {'ga':RL_GA,'es':RL_ES,'apex':RL_Apex,'a2c':RL_A2C,'dqn':RL_DQN_dopamine,'rainbow':RL_Rainbow_dopamine}
+class_map = {'ga':RL_GA,'es':RL_ES,'apex':RL_Apex,'a2c':RL_A2C,'dqn':RL_DQN_dopamine,'rainbow':RL_Rainbow_dopamine, 'impala':RL_IMPALA}
 
 #helper utility to make new python model classes
 def _MakeAtariModel(model_class,name,environment,model_path,run_id,algorithm,log_path,data_path):

@@ -34,6 +34,7 @@ datadir_local_dict = {'apex':"/space/rlzoo/apex",
                         'ga':"/space/rlzoo/ga",
                         'a2c':'/space/rlzoo/a2c',
                         'rainbow':'/space/rlzoo/rainbow',
-                        'dqn':'/space/rlzoo/dqn'}
+                        'dqn':'/space/rlzoo/dqn',
+                        'impala':'/space/rlzoo/impala'}
 
 debug = True
