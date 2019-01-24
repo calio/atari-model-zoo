@@ -16,8 +16,13 @@ training environments, which is hosted online.
 Dependencies:
 * [tensorflow](https://github.com/tensorflow/tensorflow) (with version >0.8)
 * [lucid](https://github.com/tensorflow/lucid)
-* [matplotlib](https://matplotlib.org/) for some visualiztions
-* [moviepy](https://zulko.github.io/moviepy/) (optional for making movies) 
+* [pandas](https://pandas.pydata.org/)
+* [dm-sonnet](https://github.com/deepmind/sonnet)
+* [tensorflow-probability](https://www.tensorflow.org/probability/)
+* [wrapt](https://wrapt.readthedocs.io/en/latest/)
+* [opencv-python](https://pypi.org/project/opencv-python/) for some visualizations
+* [matplotlib](https://matplotlib.org/) for some visualizations
+* [moviepy](https://zulko.github.io/moviepy/) (optional for making movies)
 * [gym](https://github.com/openai/gym) (installed with support for Atari; optional for generating new rollouts)
 * [tensorflow-onnx](https://github.com/onnx/tensorflow-onnx) (optional for exporting to [ONNX](https://onnx.ai/) format)
 
